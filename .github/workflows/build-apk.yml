@@ -24,24 +24,20 @@ jobs:
           npx cap init "Samsung Music AI" "com.samsung.music.ai" --web-dir www
           npx cap add android
 
-      - name: Set up Java JDK 17
+      - name: Set up Java JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: '17'
-          # Cache intentionally disabled here to prevent restoring corrupted files
+          java-version: '21'
 
       - name: Setup Android SDK Environment
         uses: android-actions/setup-android@v3
 
       - name: Build Debug APK with Gradle
         working-directory: android
-        env:
-          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx3200m -Dorg.gradle.daemon=false"
         run: |
           chmod +x gradlew
-          rm -rf ~/.gradle/caches/
-          ./gradlew clean assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon
 
       - name: Upload Generated APK Artifact
         uses: actions/upload-artifact@v4
