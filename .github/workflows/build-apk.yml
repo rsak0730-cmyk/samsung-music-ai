@@ -17,7 +17,6 @@ jobs:
         with:
           node-version: '18'
 
-      # Moved this step UP: Create the Android files first
       - name: Initialize Capacitor & Add Android Platform
         run: |
           npm init -y
@@ -25,13 +24,12 @@ jobs:
           npx cap init "Samsung Music AI" "com.samsung.music.ai" --web-dir www
           npx cap add android
 
-      # Moved this step DOWN: Now Java can safely cache the Gradle files
       - name: Set up Java JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
+          # Cache intentionally disabled here to prevent restoring corrupted files
 
       - name: Setup Android SDK Environment
         uses: android-actions/setup-android@v3
@@ -42,6 +40,7 @@ jobs:
           GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx3200m -Dorg.gradle.daemon=false"
         run: |
           chmod +x gradlew
+          rm -rf ~/.gradle/caches/
           ./gradlew clean assembleDebug --no-daemon
 
       - name: Upload Generated APK Artifact
