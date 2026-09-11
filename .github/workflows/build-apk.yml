@@ -17,6 +17,15 @@ jobs:
         with:
           node-version: '18'
 
+      # Moved this step UP: Create the Android files first
+      - name: Initialize Capacitor & Add Android Platform
+        run: |
+          npm init -y
+          npm install @capacitor/core @capacitor/cli @capacitor/android
+          npx cap init "Samsung Music AI" "com.samsung.music.ai" --web-dir www
+          npx cap add android
+
+      # Moved this step DOWN: Now Java can safely cache the Gradle files
       - name: Set up Java JDK 17
         uses: actions/setup-java@v4
         with:
@@ -26,13 +35,6 @@ jobs:
 
       - name: Setup Android SDK Environment
         uses: android-actions/setup-android@v3
-
-      - name: Initialize Capacitor & Add Android Platform
-        run: |
-          npm init -y
-          npm install @capacitor/core @capacitor/cli @capacitor/android
-          npx cap init "Samsung Music AI" "com.samsung.music.ai" --web-dir www
-          npx cap add android
 
       - name: Build Debug APK with Gradle
         working-directory: android
