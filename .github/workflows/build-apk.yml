@@ -22,6 +22,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+          cache: 'gradle'
 
       - name: Setup Android SDK Environment
         uses: android-actions/setup-android@v3
@@ -33,24 +34,13 @@ jobs:
           npx cap init "Samsung Music AI" "com.samsung.music.ai" --web-dir www
           npx cap add android
 
-      - name: Clear All Caches & Repositories
-        run: |
-          rm -rf ~/.gradle/caches/
-          rm -rf ~/.gradle/wrapper/
-          rm -rf android/.gradle/
-          rm -rf ~/.m2/repository/
-
-      - name: Clean Gradle Build
-        working-directory: android
-        run: |
-          chmod +x gradlew
-          ./gradlew clean --no-daemon
-
       - name: Build Debug APK with Gradle
         working-directory: android
+        env:
+          GRADLE_OPTS: "-Dorg.gradle.jvmargs=-Xmx3200m -Dorg.gradle.daemon=false"
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --refresh-dependencies --no-daemon
+          ./gradlew clean assembleDebug --no-daemon
 
       - name: Upload Generated APK Artifact
         uses: actions/upload-artifact@v4
