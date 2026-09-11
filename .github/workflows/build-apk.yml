@@ -29,6 +29,11 @@ jobs:
       - name: Install Node dependencies
         run: npm install @capacitor/core @capacitor/cli @capacitor/android
 
+      - name: Clean existing Capacitor setup
+        run: |
+          rm -rf android
+          rm -f capacitor.config.json
+
       - name: Initialize Capacitor
         run: |
           npx cap init "Samsung Music AI" "com.samsung.music.ai" --web-dir www
