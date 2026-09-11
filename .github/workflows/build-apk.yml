@@ -40,6 +40,13 @@ jobs:
           rm -rf ~/.gradle/wrapper/
           rm -rf ~/.gradle/notifications/
           rm -rf ~/.gradle/gradle.properties
+          rm -rf ~/.gradle/jdks/
+
+      - name: Create gradle.properties
+        run: |
+          mkdir -p ~/.gradle
+          echo "org.gradle.jvmargs=-Xmx4096m -XX:MaxMetaspaceSize=512m" > ~/.gradle/gradle.properties
+          echo "org.gradle.workers.max=4" >> ~/.gradle/gradle.properties
 
       - name: Build Debug APK with Gradle
         working-directory: android
