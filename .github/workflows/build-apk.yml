@@ -29,18 +29,24 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
+          cache: 'gradle'
 
       - name: Setup Android SDK Environment
         uses: android-actions/setup-android@v3
 
-      - name: Clear Gradle Cache
-        run: rm -rf ~/.gradle/caches/jars-*
+      - name: Clear Gradle Cache Completely
+        run: |
+          rm -rf ~/.gradle/caches/
+          rm -rf ~/.gradle/wrapper/
+          rm -rf ~/.gradle/notifications/
+          rm -rf ~/.gradle/gradle.properties
 
       - name: Build Debug APK with Gradle
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew --version
+          ./gradlew clean assembleDebug --no-daemon --stacktrace
 
       - name: Upload Generated APK Artifact
         uses: actions/upload-artifact@v4
